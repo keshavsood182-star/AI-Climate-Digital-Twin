@@ -23,85 +23,266 @@ st.set_page_config(
 # ============================================================
 # Styling
 # ============================================================
-st.markdown(
-    """
+def inject_lofi_station_theme():
+    custom_css = """
     <style>
-        .stApp {
-            background: linear-gradient(180deg, #eef9ff 0%, #f7fff4 50%, #fffbea 100%);
-            color: #102a43;
+        [data-testid="stAppViewContainer"] {
+            background: transparent !important;
         }
-        .hero-card, .info-card, .metric-card, .mini-card {
-            border-radius: 24px;
-            background: rgba(255, 255, 255, 0.88);
-            border: 1px solid rgba(32, 117, 163, 0.12);
-            box-shadow: 0 10px 28px rgba(30, 85, 110, 0.07);
-            padding: 1.2rem;
-            margin-bottom: 1rem;
+        .stApp {
+            position: relative;
+            background: transparent !important;
+            color: #ebf7ff;
+        }
+        [data-testid="stHeader"] {
+            background: rgba(5, 12, 20, 0.18) !important;
+            backdrop-filter: blur(10px);
+            z-index: 999 !important;
+        }
+        .block-container {
+            position: relative !important;
+            z-index: 10 !important;
+            max-width: 1180px;
+            padding-top: 2rem;
+        }
+        section.main {
+            position: relative !important;
+            z-index: 10 !important;
+        }
+        [data-testid="stVerticalBlock"] {
+            position: relative;
+            z-index: 10;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            color: #eef9ff !important;
+        }
+        p, span, div, label {
+            color: rgba(235, 247, 255, 0.88);
+        }
+        .station-label,
+        .status-pill,
+        .metric-label {
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: rgba(210, 235, 255, 0.78);
+        }
+        .hero-card {
+            background: linear-gradient(
+                135deg,
+                rgba(8, 20, 34, 0.78),
+                rgba(18, 44, 68, 0.58)
+            );
+            border: 1px solid rgba(180, 225, 255, 0.18);
+            border-radius: 28px;
+            backdrop-filter: blur(18px);
+            box-shadow:
+                0 24px 80px rgba(0, 0, 0, 0.28),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            padding: 2.2rem;
+            margin-bottom: 1.6rem;
         }
         .hero-title {
-            font-size: 2.2rem;
-            font-weight: 900;
-            color: #0d3b66;
-            margin-bottom: 0.35rem;
+            font-family: "Inter", "Segoe UI", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+            color: #eef9ff;
+            font-size: 2.6rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            margin: 0.3rem 0 1rem;
+            line-height: 1.05;
+            text-shadow: 0 0 24px rgba(120, 210, 255, 0.18);
         }
         .hero-subtitle {
+            color: rgba(225, 242, 255, 0.82);
+            line-height: 1.75;
             font-size: 1rem;
-            color: #315b72;
-            line-height: 1.6;
+            max-width: 80rem;
+        }
+        .glass-card,
+        .dashboard-card,
+        .info-card,
+        .metric-card,
+        .prediction-card,
+        .hero-card {
+            background: linear-gradient(
+                135deg,
+                rgba(8, 20, 34, 0.78),
+                rgba(18, 44, 68, 0.58)
+            );
+            border: 1px solid rgba(180, 225, 255, 0.18);
+            border-radius: 24px;
+            backdrop-filter: blur(18px);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+            color: #edf8ff !important;
         }
         .metric-card {
             min-height: 110px;
         }
         .metric-label {
-            color: #4b6b82;
-            font-weight: 700;
-            margin-bottom: 0.35rem;
+            margin-bottom: 0.45rem;
         }
         .metric-value {
-            color: #0d3b66;
+            color: #f4fbff;
             font-size: 1.6rem;
             font-weight: 800;
         }
         .small-muted {
-            color: #4b6b82;
-            font-size: 0.90rem;
+            color: rgba(230, 245, 255, 0.78);
+            font-size: 0.95rem;
         }
-        .note-box, .good-box, .bad-box {
-            border-radius: 20px;
+        .note-box,
+        .good-box,
+        .bad-box {
             padding: 1rem 1.1rem;
             margin: 1rem 0;
         }
         .note-box {
-            background: rgba(230, 245, 255, 0.95);
-            border: 1px solid rgba(36, 116, 197, 0.16);
-            color: #133d5c;
+            border-color: rgba(180, 225, 255, 0.16);
         }
         .good-box {
-            background: rgba(225, 250, 235, 0.94);
-            border: 1px solid rgba(67, 154, 100, 0.18);
-            color: #164f2d;
+            border-color: rgba(100, 220, 170, 0.18);
         }
         .bad-box {
-            background: rgba(255, 238, 238, 0.95);
-            border: 1px solid rgba(190, 80, 80, 0.18);
-            color: #6b2b2b;
+            border-color: rgba(240, 160, 160, 0.22);
+        }
+        .stButton > button {
+            background: rgba(8, 18, 30, 0.82);
+            color: #eaf7ff !important;
+            border: 1px solid rgba(170, 220, 255, 0.22);
+            border-radius: 14px;
+            padding: 0.7rem 1.1rem;
+            font-weight: 700;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+        }
+        .stButton > button:hover {
+            background: rgba(24, 56, 84, 0.88);
+            border-color: rgba(180, 230, 255, 0.36);
+            color: #ffffff !important;
+        }
+        .stTabs [data-baseweb="tab-list"] {
+            gap: 0.5rem;
         }
         .stTabs [data-baseweb="tab"] {
+            background: rgba(8, 18, 30, 0.48);
             border-radius: 999px;
+            color: rgba(230, 245, 255, 0.72);
+            border: 1px solid rgba(180, 225, 255, 0.12);
+            padding: 0.6rem 1rem;
         }
         .stTabs [aria-selected="true"] {
-            background: #bee6ff !important;
-            color: #0d3b66 !important;
+            background: rgba(120, 190, 255, 0.22);
+            color: #ffffff;
+            border-color: rgba(180, 230, 255, 0.34);
+        }
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.45rem 0.75rem;
+            border-radius: 999px;
+            background: rgba(8, 18, 30, 0.64);
+            border: 1px solid rgba(180, 225, 255, 0.18);
+            color: #eaf7ff;
+            font-weight: 700;
+            font-size: 0.85rem;
+            backdrop-filter: blur(12px);
+        }
+        [data-testid="stSidebar"] {
+            background: linear-gradient(
+                180deg,
+                rgba(5, 12, 22, 0.92),
+                rgba(10, 26, 42, 0.88)
+            );
+            border-right: 1px solid rgba(180, 225, 255, 0.12);
+        }
+        [data-testid="stSidebar"] * {
+            color: rgba(235, 247, 255, 0.88);
+        }
+        [data-testid="stMetric"] {
+            background: rgba(8, 18, 30, 0.58);
+            border: 1px solid rgba(180, 225, 255, 0.14);
+            border-radius: 20px;
+            padding: 1rem;
+            backdrop-filter: blur(12px);
+        }
+        [data-testid="stMetricLabel"] {
+            color: rgba(210, 235, 255, 0.72);
+        }
+        [data-testid="stMetricValue"] {
+            color: #f4fbff;
             font-weight: 800;
         }
+        .map-card,
+        .chart-card {
+            background: rgba(245, 250, 255, 0.88);
+            border-radius: 24px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.42);
+            color: #101828;
+        }
+        .lofi-weather-bg {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -3;
+            pointer-events: none;
+            overflow: hidden;
+            background: #07111f;
+        }
+        .lofi-video-bg {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -3;
+            pointer-events: none;
+            overflow: hidden;
+            background: #07111f;
+        }
+        .lofi-video-bg video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.45;
+            filter: brightness(0.72) saturate(0.88) contrast(1.08);
+        }
+        .lofi-video-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at center, rgba(255,255,255,0.08), rgba(0,0,0,0.30)),
+                linear-gradient(rgba(5,15,25,0.18), rgba(5,15,25,0.45));
+        }
+        .lofi-scanlines {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.10;
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(255,255,255,0.10) 0px,
+                rgba(255,255,255,0.10) 1px,
+                transparent 2px,
+                transparent 5px
+            );
+            mix-blend-mode: overlay;
+        }
     </style>
-    """,
-    unsafe_allow_html=True,
-)
+    """
+    st.markdown(custom_css, unsafe_allow_html=True)
+
+inject_lofi_station_theme()
 
 
 # ============================================================
 # Paths
+# ============================================================
 # ============================================================
 APP_DIR = Path(__file__).resolve().parent
 
@@ -327,6 +508,480 @@ def heavy_alert_level(heavy_probability: float) -> str:
     if heavy_probability >= 0.30:
         return "🟡 Moderate Watch"
     return "🟢 No Heavy-Rain Alert"
+
+
+# ============================================================
+# Reactive ambience helpers
+# ============================================================
+SOUND_DIR = APP_DIR / "assets" / "sounds"
+MANUAL_SOUND_OPTIONS = {
+    "Calm": "calm.mp3",
+    "Birds": "birds.mp3",
+    "Light rain": "light_rain.mp3",
+    "Rain + wind": "rain_wind.mp3",
+    "Heavy rain": "heavy_rain.mp3",
+    "Thunderstorm": "thunder.mp3",
+    "Dry wind": "dry_wind.mp3",
+}
+
+
+def get_reactive_sound(predicted_rainfall_mm, risk_level, heatwave_risk=None):
+    """Select a sound file name from prediction and risk inputs."""
+    risk_level = str(risk_level).lower()
+
+    if heatwave_risk is not None and str(heatwave_risk).lower() in ["high", "extreme", "yes", "true"]:
+        return "dry_wind.mp3"
+
+    if predicted_rainfall_mm >= 50 or "extreme" in risk_level or "flood" in risk_level:
+        return "thunder.mp3"
+
+    elif predicted_rainfall_mm >= 20 or "high" in risk_level:
+        return "heavy_rain.mp3"
+
+    elif predicted_rainfall_mm >= 5 or "moderate" in risk_level:
+        return "rain_wind.mp3"
+
+    elif predicted_rainfall_mm > 0:
+        return "light_rain.mp3"
+
+    else:
+        return "calm.mp3"
+
+
+def get_representative_risk_label(df: pd.DataFrame, risk_col: str) -> str:
+    """Choose the most severe risk level present in the selected subset."""
+    if df.empty or risk_col not in df.columns:
+        return "No / Low Rain"
+    for risk in reversed(RISK_ORDER):
+        if (df[risk_col] == risk).any():
+            return risk
+    return str(df[risk_col].mode().iloc[0]) if not df[risk_col].mode().empty else "No / Low Rain"
+
+
+def get_ambience_sound_file(sound_mode: str, manual_choice: Optional[str], predicted_rainfall_mm: float, risk_label: str, heatwave_risk=None) -> Optional[str]:
+    if sound_mode == "Off":
+        return None
+    if sound_mode == "Manual":
+        return MANUAL_SOUND_OPTIONS.get(manual_choice, "calm.mp3")
+    return get_reactive_sound(predicted_rainfall_mm, risk_label, heatwave_risk)
+
+
+def get_sound_path(sound_file: Optional[str]) -> Optional[Path]:
+    if sound_file is None:
+        return None
+    return SOUND_DIR / sound_file
+
+
+def sound_file_exists(sound_file: Optional[str]) -> bool:
+    sound_path = get_sound_path(sound_file)
+    return sound_path is not None and sound_path.exists()
+
+
+AMBITION_ANIMATION_MAP = {
+    "calm.mp3": {
+        "label": "Clear / calm",
+        "animation": "cloudy",
+        "subtitle": "A calm soundscape with low predicted rainfall.",
+    },
+    "birds.mp3": {
+        "label": "Birdsong in nature",
+        "animation": "bird",
+        "subtitle": "A gentle natural ambience for low-risk conditions.",
+    },
+    "light_rain.mp3": {
+        "label": "Light rain",
+        "animation": "light-rain",
+        "subtitle": "Light drops and soft rainfall animation.",
+    },
+    "rain_wind.mp3": {
+        "label": "Rain with wind",
+        "animation": "rain-wind",
+        "subtitle": "Steadier rain with wind movement.",
+    },
+    "heavy_rain.mp3": {
+        "label": "Heavy rain",
+        "animation": "heavy-rain",
+        "subtitle": "Strong rainfall animation for a higher-risk event.",
+    },
+    "thunder.mp3": {
+        "label": "Thunderstorm",
+        "animation": "thunder",
+        "subtitle": "Stormy conditions with thunder and heavier precipitation.",
+    },
+    "dry_wind.mp3": {
+        "label": "Dry wind",
+        "animation": "dry-wind",
+        "subtitle": "Dry and windy ambience for heatwave or clear conditions.",
+    },
+}
+
+
+def get_sidebar_ambience_sound_file(
+    dashboard_df: Optional[pd.DataFrame],
+    sound_mode: str,
+    manual_choice: Optional[str],
+    selected_date: Optional[str] = None,
+) -> Optional[str]:
+    if sound_mode == "Off":
+        return None
+    if sound_mode == "Manual":
+        return MANUAL_SOUND_OPTIONS.get(manual_choice, "calm.mp3")
+    if dashboard_df is None or dashboard_df.empty:
+        return "calm.mp3"
+
+    cols = get_prediction_columns(dashboard_df)
+    if cols["pred_rain"] is None or cols["risk"] is None:
+        return "calm.mp3"
+
+    if selected_date is None:
+        available_dates = sorted(dashboard_df["date"].dt.date.unique())
+        selected_date = available_dates[-1] if available_dates else None
+
+    if selected_date is None:
+        return "calm.mp3"
+
+    day_df = dashboard_df[dashboard_df["date"].dt.date == selected_date].copy()
+    if day_df.empty:
+        day_df = dashboard_df.copy()
+
+    day_df[cols["pred_rain"]]= safe_numeric(day_df[cols["pred_rain"]])
+    predicted_mean = day_df[cols["pred_rain"]].mean() if not day_df.empty else 0.0
+    risk_label = get_representative_risk_label(day_df, cols["risk"])
+    return get_reactive_sound(predicted_mean, risk_label, heatwave_risk=None)
+
+
+def get_ambience_animation_state(sound_file: Optional[str], enabled: bool) -> Dict[str, str]:
+    if not enabled or sound_file is None:
+        return {
+            "label": "Ambience off",
+            "animation": "cloudy",
+            "subtitle": "Ambient visuals are muted. Use the sidebar or homepage button to restore sound.",
+        }
+    return AMBITION_ANIMATION_MAP.get(sound_file, AMBITION_ANIMATION_MAP["calm.mp3"])
+
+
+
+BACKGROUND_URLS = {
+    # Kept only for reference. The current app uses CSS-only lofi backgrounds so it never depends on remote video hotlinking.
+    "calm": "",
+    "cloudy": "",
+    "light_rain": "",
+    "moderate_rain": "",
+    "heavy_rain": "",
+    "thunderstorm": "",
+    "dry_wind": "",
+}
+
+
+LOFI_STATE_LABELS = {
+    "calm": "Calm Climate",
+    "cloudy": "Cloudy",
+    "light_rain": "Light Rain",
+    "moderate_rain": "Rain With Wind",
+    "heavy_rain": "Heavy Rain",
+    "thunderstorm": "Thunderstorm",
+    "dry_wind": "Dry Wind",
+}
+
+
+LOFI_GRADIENTS = {
+    "calm": "linear-gradient(135deg, #102538 0%, #183d52 45%, #355d6d 100%)",
+    "cloudy": "linear-gradient(135deg, #111f2e 0%, #263a4a 45%, #506476 100%)",
+    "light_rain": "linear-gradient(135deg, #0f2235 0%, #1d4257 50%, #3d6778 100%)",
+    "moderate_rain": "linear-gradient(135deg, #091727 0%, #15344a 50%, #2b5265 100%)",
+    "heavy_rain": "linear-gradient(135deg, #050c16 0%, #10283d 55%, #203f52 100%)",
+    "thunderstorm": "linear-gradient(135deg, #030711 0%, #101a2b 50%, #1d3145 100%)",
+    "dry_wind": "linear-gradient(135deg, #2d1f16 0%, #7c5130 45%, #d1995a 100%)",
+}
+
+
+def _make_rain_lines(weather_state: str) -> str:
+    counts = {
+        "calm": 0,
+        "cloudy": 0,
+        "light_rain": 22,
+        "moderate_rain": 42,
+        "heavy_rain": 72,
+        "thunderstorm": 88,
+        "dry_wind": 0,
+    }
+    count = counts.get(weather_state, 18)
+    drops = []
+    for i in range(count):
+        left = (i * 37) % 100
+        delay = ((i * 0.17) % 2.2)
+        duration = 1.8 if weather_state == "light_rain" else 1.15 if weather_state in ["moderate_rain", "heavy_rain"] else 0.95
+        height = 42 if weather_state == "light_rain" else 62 if weather_state == "moderate_rain" else 86
+        opacity = 0.28 if weather_state == "light_rain" else 0.42 if weather_state == "moderate_rain" else 0.58
+        drops.append(
+            f'<i class="rain-line" style="left:{left}%; animation-delay:{delay:.2f}s; animation-duration:{duration:.2f}s; height:{height}px; opacity:{opacity};"></i>'
+        )
+    return "\n".join(drops)
+
+
+def _make_window_grid(cols: int = 4, rows: int = 5) -> str:
+    cells = []
+    for i in range(cols * rows):
+        # Deterministic pattern so the city looks alive without JS/randomness.
+        lit = " lit" if (i * 7) % 11 in [0, 1, 4] else ""
+        cells.append(f'<span class="window{lit}"></span>')
+    return "".join(cells)
+
+
+def render_cute_lofi_background(weather_state: str) -> None:
+    """Render a CSS-only lofi climate-station background that cannot cover the UI.
+
+    This version does NOT inject fixed HTML layers. It paints the atmosphere on
+    .stApp pseudo-elements and forces Streamlit content above the background.
+    """
+    weather_state = str(weather_state or "calm")
+    weather_state = weather_state if weather_state in LOFI_GRADIENTS else "calm"
+    label = LOFI_STATE_LABELS.get(weather_state, "Climate Ambience")
+    gradient = LOFI_GRADIENTS.get(weather_state, LOFI_GRADIENTS["calm"])
+
+    # State-specific intensity values.
+    if weather_state == "light_rain":
+        rain_opacity, rain_speed, storm_opacity = 0.22, "1.8s", 0.0
+    elif weather_state == "moderate_rain":
+        rain_opacity, rain_speed, storm_opacity = 0.34, "1.25s", 0.0
+    elif weather_state == "heavy_rain":
+        rain_opacity, rain_speed, storm_opacity = 0.48, "0.85s", 0.0
+    elif weather_state == "thunderstorm":
+        rain_opacity, rain_speed, storm_opacity = 0.56, "0.70s", 0.22
+    else:
+        rain_opacity, rain_speed, storm_opacity = 0.0, "1.8s", 0.0
+
+    wind_opacity = 0.30 if weather_state == "dry_wind" else 0.0
+    sun_opacity = 0.72 if weather_state in ["calm", "dry_wind"] else 0.24
+    cloud_opacity = 0.42 if weather_state in ["calm", "cloudy", "light_rain"] else 0.58
+
+    # A compact pure-CSS illustration: sky, clouds, moon/sun, city silhouettes,
+    # rain/wind overlays, scanlines, and vignette. Because these are pseudo-elements
+    # of .stApp with z-index:0, the actual Streamlit UI remains at z-index:10+.
+    custom_css = f"""
+    <style>
+    .stApp {{
+        position: relative !important;
+        min-height: 100vh !important;
+        overflow-x: hidden !important;
+        background: {gradient} !important;
+        color: #ebf7ff !important;
+    }}
+
+    .stApp::before {{
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background:
+            radial-gradient(circle at 84% 16%, rgba(255, 226, 155, {sun_opacity}), rgba(255, 208, 132, 0.16) 4%, transparent 10%),
+            radial-gradient(ellipse at 20% 17%, rgba(231, 246, 255, {cloud_opacity}), rgba(231, 246, 255, 0.18) 8%, transparent 18%),
+            radial-gradient(ellipse at 54% 10%, rgba(231, 246, 255, {cloud_opacity * 0.82}), rgba(231, 246, 255, 0.16) 8%, transparent 18%),
+            radial-gradient(ellipse at 56% 25%, rgba(231, 246, 255, {cloud_opacity * 0.65}), rgba(231, 246, 255, 0.12) 7%, transparent 16%),
+            radial-gradient(circle at 18% 26%, rgba(95, 205, 255, 0.10), transparent 26%),
+            radial-gradient(circle at 78% 18%, rgba(255, 196, 128, 0.08), transparent 24%);
+        filter: blur(0.2px);
+        animation: lofiCloudFloat 18s ease-in-out infinite alternate;
+    }}
+
+    .stApp::after {{
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        opacity: 1;
+        background-image:
+            repeating-linear-gradient(102deg, transparent 0 22px, rgba(195, 232, 255, {rain_opacity}) 23px 25px, transparent 26px 44px),
+            repeating-linear-gradient(90deg, transparent 0 42px, rgba(255, 226, 166, {wind_opacity}) 43px 130px, transparent 131px 220px),
+            linear-gradient(to top, rgba(4, 11, 18, 0.94) 0 15vh, transparent 15vh),
+            linear-gradient(to top, rgba(8, 19, 31, 0.96) 0 23vh, transparent 23vh),
+            linear-gradient(to top, rgba(8, 19, 31, 0.94) 0 31vh, transparent 31vh),
+            linear-gradient(to top, rgba(8, 19, 31, 0.95) 0 25vh, transparent 25vh),
+            linear-gradient(to top, rgba(8, 19, 31, 0.93) 0 34vh, transparent 34vh),
+            linear-gradient(to top, rgba(8, 19, 31, 0.95) 0 20vh, transparent 20vh),
+            linear-gradient(to top, rgba(8, 19, 31, 0.95) 0 28vh, transparent 28vh),
+            radial-gradient(ellipse at 18% 88%, rgba(255, 185, 90, 0.18), transparent 26%),
+            radial-gradient(circle at center, rgba(255,255,255,0.02), rgba(0,0,0,0.36)),
+            linear-gradient(rgba(200, 235, 255, {storm_opacity}), rgba(200, 235, 255, 0)),
+            repeating-linear-gradient(to bottom, rgba(255,255,255,0.09) 0px, rgba(255,255,255,0.09) 1px, transparent 2px, transparent 5px);
+        background-size:
+            115px 115px,
+            360px 100vh,
+            100vw 40vh,
+            8vw 35vh,
+            11vw 38vh,
+            9vw 35vh,
+            12vw 40vh,
+            9vw 30vh,
+            10vw 34vh,
+            100vw 24vh,
+            100vw 100vh,
+            100vw 100vh,
+            100vw 100vh;
+        background-position:
+            0 -20vh,
+            0 0,
+            0 bottom,
+            8vw bottom,
+            18vw bottom,
+            31vw bottom,
+            42vw bottom,
+            56vw bottom,
+            68vw bottom,
+            0 bottom,
+            center,
+            center,
+            0 0;
+        background-repeat:
+            repeat,
+            repeat-x,
+            no-repeat,
+            no-repeat,
+            no-repeat,
+            no-repeat,
+            no-repeat,
+            no-repeat,
+            no-repeat,
+            no-repeat,
+            no-repeat,
+            no-repeat,
+            repeat;
+        animation: lofiRainFall {rain_speed} linear infinite, lofiLightning 7s linear infinite;
+        mix-blend-mode: normal;
+    }}
+
+    /* Keep the actual Streamlit UI above the CSS-painted background. */
+    [data-testid="stAppViewContainer"],
+    section.main,
+    .main,
+    .block-container,
+    [data-testid="stVerticalBlock"],
+    [data-testid="stHorizontalBlock"],
+    [data-testid="element-container"] {{
+        position: relative !important;
+        z-index: 10 !important;
+        background: transparent !important;
+    }}
+
+    [data-testid="stHeader"] {{
+        position: relative !important;
+        z-index: 50 !important;
+        background: rgba(5, 12, 20, 0.18) !important;
+        backdrop-filter: blur(10px);
+    }}
+
+    [data-testid="stSidebar"] {{
+        position: relative !important;
+        z-index: 60 !important;
+        background: linear-gradient(180deg, rgba(5, 12, 22, 0.94), rgba(10, 26, 42, 0.90)) !important;
+        border-right: 1px solid rgba(180, 225, 255, 0.12) !important;
+    }}
+
+    .hero-card,
+    .glass-card,
+    .dashboard-card,
+    .info-card,
+    .metric-card,
+    .prediction-card,
+    .note-box,
+    .good-box,
+    .bad-box,
+    [data-testid="stMetric"],
+    .stTabs {{
+        position: relative !important;
+        z-index: 20 !important;
+    }}
+
+    .lofi-status-pill-fixed {{
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-radius: 999px;
+        padding: 0.45rem 0.85rem;
+        margin-bottom: 0.75rem;
+        background: rgba(8, 18, 30, 0.62);
+        border: 1px solid rgba(180, 225, 255, 0.18);
+        backdrop-filter: blur(12px);
+        color: rgba(235, 247, 255, 0.92) !important;
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }}
+
+    @keyframes lofiRainFall {{
+        from {{ background-position: 0 -20vh, 0 0, 0 bottom, 8vw bottom, 18vw bottom, 31vw bottom, 42vw bottom, 56vw bottom, 68vw bottom, 0 bottom, center, center, 0 0; }}
+        to {{ background-position: -70px 110vh, 360px 0, 0 bottom, 8vw bottom, 18vw bottom, 31vw bottom, 42vw bottom, 56vw bottom, 68vw bottom, 0 bottom, center, center, 0 0; }}
+    }}
+
+    @keyframes lofiCloudFloat {{
+        0% {{ transform: translateX(-1.2vw) translateY(0); }}
+        100% {{ transform: translateX(1.8vw) translateY(0.8vh); }}
+    }}
+
+    @keyframes lofiLightning {{
+        0%, 88%, 100% {{ filter: brightness(1); }}
+        89% {{ filter: brightness({1 + storm_opacity}); }}
+        90% {{ filter: brightness(1); }}
+        91% {{ filter: brightness({1 + storm_opacity * 0.7}); }}
+        92% {{ filter: brightness(1); }}
+    }}
+
+    @media (prefers-reduced-motion: reduce) {{
+        .stApp::before,
+        .stApp::after {{
+            animation-duration: 0.001ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.001ms !important;
+        }}
+    }}
+    </style>
+    """
+    st.markdown(custom_css, unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="lofi-status-pill-fixed">Current ambience: {label}</div>',
+        unsafe_allow_html=True,
+    )
+
+
+def get_video_mime_type(video_url):
+    # Kept for compatibility with older code. CSS-only background no longer uses remote videos.
+    video_url = str(video_url).lower()
+    if video_url.endswith(".webm"):
+        return "video/webm"
+    if video_url.endswith(".mp4"):
+        return "video/mp4"
+    return "video/mp4"
+
+
+def get_fallback_gradient(weather_state):
+    weather_state = str(weather_state or "calm")
+    return LOFI_GRADIENTS.get(weather_state, LOFI_GRADIENTS["calm"])
+
+
+def render_css_weather_background(weather_state):
+    render_cute_lofi_background(weather_state)
+
+
+def render_remote_lofi_background(weather_state):
+    # Remote Pixabay links were unreliable in <video> backgrounds, so this now renders a deploy-safe CSS lofi scene.
+    render_cute_lofi_background(weather_state)
+
+
+def map_animation_to_background_state(animation_class: str) -> str:
+    mapping = {
+        "cloudy": "cloudy",
+        "bird": "calm",
+        "light-rain": "light_rain",
+        "rain-wind": "moderate_rain",
+        "heavy-rain": "heavy_rain",
+        "thunder": "thunderstorm",
+        "dry-wind": "dry_wind",
+        "calm": "calm",
+    }
+    return mapping.get(animation_class, "calm")
 
 
 def get_prediction_columns(df: pd.DataFrame) -> Dict[str, Optional[str]]:
@@ -656,6 +1311,71 @@ except Exception as e:
 
 metrics_v1_v2, metrics_heavy = load_metrics_tables()
 
+# Sidebar ambience controls require loaded forecast data so that audio and animation state can react globally.
+with st.sidebar:
+    st.divider()
+    st.markdown("### Reactive Climate Ambience")
+    st.caption("Soundscape reacts to predicted rainfall and risk level.")
+    if "weather_sound_enabled" not in st.session_state:
+        st.session_state["weather_sound_enabled"] = True
+    toggle_func = getattr(st, "toggle", st.checkbox)
+    weather_sound_enabled = toggle_func(
+        "Enable reactive weather sounds",
+        value=st.session_state["weather_sound_enabled"],
+        key="weather_sound_sidebar_toggle",
+    )
+    if weather_sound_enabled != st.session_state["weather_sound_enabled"]:
+        st.session_state["weather_sound_enabled"] = weather_sound_enabled
+    sound_mode = st.radio(
+        "Sound mode",
+        ["Auto-reactive", "Manual", "Off"],
+        index=0,
+        key="sound_mode",
+    )
+    manual_sound_choice = None
+    if sound_mode == "Manual":
+        manual_sound_choice = st.selectbox(
+            "Select manual ambience",
+            list(MANUAL_SOUND_OPTIONS.keys()),
+            index=0,
+            key="manual_sound_choice",
+        )
+    else:
+        st.caption("Auto-reactive mode uses selected dashboard prediction and risk values.")
+
+    if weather_sound_enabled and sound_mode != "Off":
+        selected_date_key = st.session_state.get("selected_date")
+        selected_sound_file = get_sidebar_ambience_sound_file(
+            dashboard_df,
+            sound_mode,
+            manual_sound_choice,
+            selected_date=selected_date_key,
+        )
+        sound_path = get_sound_path(selected_sound_file)
+        if sound_path is not None and sound_path.exists():
+            st.audio(
+                str(sound_path),
+                format="audio/mpeg",
+                loop=True,
+                autoplay=True,
+            )
+        else:
+            st.caption(f"Reactive ambience file missing: assets/sounds/{selected_sound_file}")
+
+
+# Calculate the current ambience before rendering the visible UI.
+weather_sound_file = get_sidebar_ambience_sound_file(
+    dashboard_df,
+    st.session_state.get("sound_mode", "Auto-reactive"),
+    st.session_state.get("manual_sound_choice", "Calm"),
+    selected_date=st.session_state.get("selected_date"),
+)
+weather_animation = get_ambience_animation_state(
+    weather_sound_file,
+    st.session_state.get("weather_sound_enabled", True),
+)
+weather_state = map_animation_to_background_state(weather_animation["animation"])
+render_remote_lofi_background(weather_state)
 
 # ============================================================
 # Main interface
@@ -663,7 +1383,8 @@ metrics_v1_v2, metrics_heavy = load_metrics_tables()
 st.markdown(
     """
     <div class="hero-card">
-        <div class="hero-title">🌧️ AI Rainfall-Risk Digital Twin</div>
+        <div class="station-label">LIVE CLIMATE MONITORING STATION</div>
+        <div class="hero-title">AI Rainfall-Risk Digital Twin</div>
         <div class="hero-subtitle">
             Punjab + Haryana prototype using IMD rainfall ground truth and NASA POWER meteorological inputs.
             The system predicts next-day rain probability, estimated rainfall amount, rainfall-risk category,
@@ -680,18 +1401,45 @@ if load_errors:
             st.warning(message)
 
 
-tabs = st.tabs(["🏡 Home / Overview", "🗺️ Prediction Dashboard", "🧪 What-if Simulator", "📊 V1 vs V2 Results"])
+tabs = st.tabs(["🗺️ Prediction Dashboard", "🏠 Home / Overview", "🧪 What-if Simulator", "📊 V1 vs V2 Results"])
 
 
 # ============================================================
 # Home tab
 # ============================================================
-with tabs[0]:
+with tabs[1]:
     st.markdown("### Project overview")
     st.write(
         "This rain-risk digital twin prototype combines historical IMD rainfall targets with NASA POWER climate features to score tomorrow's rainfall risk in Punjab and Haryana. "
         "It is built for insight, storyboarding, and early-warning visualization rather than exact millimeter forecasting."
     )
+    if "weather_sound_enabled" not in st.session_state:
+        st.session_state["weather_sound_enabled"] = True
+
+    def toggle_weather_sound():
+        st.session_state["weather_sound_enabled"] = not st.session_state["weather_sound_enabled"]
+
+    sound_button_label = (
+        "🔇 Mute Weather Sound"
+        if st.session_state["weather_sound_enabled"]
+        else "🔊 Enable Weather Sound"
+    )
+    st.button(
+        sound_button_label,
+        key="weather_sound_toggle_btn",
+        on_click=toggle_weather_sound,
+    )
+    homepage_sound_file = get_sidebar_ambience_sound_file(
+        dashboard_df,
+        st.session_state.get("sound_mode", "Auto-reactive"),
+        st.session_state.get("manual_sound_choice", "Calm"),
+        selected_date=st.session_state.get("selected_date"),
+    )
+    homepage_animation = get_ambience_animation_state(
+        homepage_sound_file,
+        st.session_state["weather_sound_enabled"],
+    )
+    st.caption(f"Current ambience: {homepage_animation['label']}")
     c1, c2, c3 = st.columns(3)
     with c1:
         st.markdown(
@@ -783,7 +1531,7 @@ with tabs[0]:
 # ============================================================
 # Prediction Dashboard tab
 # ============================================================
-with tabs[1]:
+with tabs[0]:
     st.markdown("### Next-day rainfall-risk map")
     if dashboard_df is None:
         st.error("Prediction dashboard data is unavailable. Please check that the dashboard CSV exists under DEV_HANDOFF/data.")
@@ -797,7 +1545,12 @@ with tabs[1]:
         dashboard_df[cols["heavy_alert"]]= dashboard_df[cols["heavy_alert"]].fillna("No Heavy-Rain Alert")
 
         available_dates = sorted(dashboard_df["date"].dt.date.unique())
-        selected_date = st.selectbox("Select forecast date", available_dates, index=len(available_dates) - 1)
+        selected_date = st.selectbox(
+            "Select forecast date",
+            available_dates,
+            index=len(available_dates) - 1,
+            key="selected_date",
+        )
         show_only_alerts = st.checkbox("Show only high/severe risk points", value=False)
         min_heavy_prob = st.slider(
             "Minimum heavy-rain probability",
